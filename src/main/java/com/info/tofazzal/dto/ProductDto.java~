@@ -1,0 +1,18 @@
+package com.info.tofazzal.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Map;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProductDto {
+    private String name;
+    private String tax_category;
+    private String description;
+    private String image_url;
+    private CustomDataDto custom_data;
+}

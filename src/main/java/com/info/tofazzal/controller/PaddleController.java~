@@ -1,0 +1,37 @@
+package com.info.tofazzal.controller;
+
+import com.info.tofazzal.constants.AppConstant;
+import com.info.tofazzal.service.PaddleService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+@RestController
+@RequestMapping(AppConstant.API_PADDLE)
+@RequiredArgsConstructor
+public class PaddleController {
+
+    private final PaddleService paddleService;
+
+    @GetMapping("/subscriptions")
+    public ResponseEntity<?> listSubscriptions() {
+        return ResponseEntity.ok(paddleService.listSubscriptions());
+    }
+
+    @GetMapping("/subscription-users/{subscriptionId}")
+    public ResponseEntity<?> getUsers(@PathVariable String subscriptionId) {
+        return ResponseEntity.ok(paddleService.getSubscriptionUsers(subscriptionId));
+    }
+
+    @PostMapping("/cancel-subscription/{subscriptionId}")
+    public ResponseEntity<?> cancel(@PathVariable String subscriptionId) {
+        return ResponseEntity.ok(paddleService.cancelSubscription(subscriptionId));
+    }
+
+    @GetMapping("/paylink")
+    public ResponseEntity<?> generatePayLink(@RequestParam int productId, @RequestParam String email, @RequestParam(required = false) String passthrough) {
+        return ResponseEntity.ok(Map.of("url", paddleService.generatePayLink(productId, email, passthrough)));
+    }
+}

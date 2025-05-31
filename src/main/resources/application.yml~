@@ -1,0 +1,5 @@
+paddle:
+  vendor-id: 233092
+  auth-code: pdl_live_apikey_01jwjkc1s2vma7f744243ava1t_aYBjGV5Ye5Npc8acCVDHzh_Apt
+  #  api-url: https://vendors.paddle.com/api/2.0
+  api-url: https://api.paddle.com/products

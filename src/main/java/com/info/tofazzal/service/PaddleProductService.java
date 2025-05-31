@@ -1,0 +1,80 @@
+package com.info.tofazzal.service;
+
+import com.info.tofazzal.config.PaddleProperties;
+import com.info.tofazzal.dto.product.CreateProductRequestDto;
+import com.info.tofazzal.dto.product.CreateProductResponseDto;
+import com.info.tofazzal.dto.product.ProductListResponseDto;
+import com.info.tofazzal.dto.product.UpdateProductRequestDto;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+@Slf4j
+@Service
+public class PaddleProductService {
+
+    private final PaddleProperties paddleProperties;
+
+    private final String BASE_URL;
+
+    private final RestTemplate restTemplate;
+
+    public PaddleProductService(PaddleProperties paddleProperties, RestTemplateBuilder builder) {
+        this.paddleProperties = paddleProperties;
+        BASE_URL = paddleProperties.getApiUrl() + "/products";
+        this.restTemplate = builder.build();
+    }
+
+    public ProductListResponseDto getProducts() {
+        HttpHeaders headers = buildHeaders();
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+
+        ResponseEntity<ProductListResponseDto> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, request, ProductListResponseDto.class);
+        log.info("Get Product Response: {}", response.getBody());
+        log.info("Response: {}", response.getBody());
+        return response.getBody();
+    }
+
+
+    public CreateProductResponseDto createProduct(CreateProductRequestDto request) {
+        HttpHeaders headers = buildHeaders();
+        HttpEntity<CreateProductRequestDto> httpEntity = new HttpEntity<>(request, headers);
+
+        ResponseEntity<CreateProductResponseDto> response = restTemplate.exchange(BASE_URL, HttpMethod.POST, httpEntity, CreateProductResponseDto.class);
+        log.info("Create Product Response: {}", response.getBody());
+        return response.getBody();
+    }
+
+    public CreateProductResponseDto getProduct(String productId) {
+        HttpHeaders headers = buildHeaders();
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+
+        ResponseEntity<CreateProductResponseDto> response = restTemplate.exchange(BASE_URL + "/" + productId, HttpMethod.GET, request, CreateProductResponseDto.class);
+        log.info("Get Product Response: {}", response.getBody());
+        return response.getBody();
+    }
+
+    public CreateProductResponseDto updateProduct(String productId, UpdateProductRequestDto updateDto) {
+        HttpHeaders headers = buildHeaders();
+        HttpEntity<UpdateProductRequestDto> entity = new HttpEntity<>(updateDto, headers);
+        log.info("Updating Product with ID: {}, Body: {}", productId, updateDto);
+        ResponseEntity<CreateProductResponseDto> response = restTemplate.exchange(BASE_URL + "/" + productId, HttpMethod.PATCH, entity, CreateProductResponseDto.class);
+        log.info("Update Product Response: {}", response.getBody());
+        return response.getBody();
+    }
+
+    private HttpHeaders buildHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(paddleProperties.getAuthCode());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        log.info("Headers: {}", headers);
+        return headers;
+    }
+
+    private String getProductBaseUrl() {
+        return paddleProperties.getApiUrl() + "/products";
+    }
+
+}

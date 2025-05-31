@@ -1,0 +1,4 @@
+package com.info.tofazzal.dto;
+
+public class CustomDataDto {
+}

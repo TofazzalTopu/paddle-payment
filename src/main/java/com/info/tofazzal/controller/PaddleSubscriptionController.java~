@@ -1,0 +1,41 @@
+package com.info.tofazzal.controller;
+
+import com.info.tofazzal.constants.AppConstant;
+import com.info.tofazzal.dto.subscription.*;
+import com.info.tofazzal.service.PaddleSubscriptionService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping(AppConstant.API_PADDLE_SUBSCRIPTIONS)
+@RequiredArgsConstructor
+public class PaddleSubscriptionController {
+
+    private final PaddleSubscriptionService subscriptionService;
+
+    @GetMapping("/{id}")
+    public SubscriptionResponseDTO getSubscription(@PathVariable("id") String id) {
+        return subscriptionService.getSubscriptionById(id);
+    }
+
+    @PatchMapping("/{subscriptionId}")
+    public ResponseEntity<SubscriptionUpdateResponse> updateSubscription(@PathVariable String subscriptionId, @RequestBody UpdateSubscriptionRequest request) {
+        SubscriptionUpdateResponse response = subscriptionService.updateSubscription(subscriptionId, request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{subscriptionId}/charge")
+    public ResponseEntity<SubscriptionChargeResponseDTO> chargeSubscription(@PathVariable String subscriptionId, @RequestBody ChargeRequestDTO requestDTO) {
+        SubscriptionChargeResponseDTO response = subscriptionService.chargeSubscription(subscriptionId, requestDTO);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{subscriptionId}/cancel")
+    public ResponseEntity<SubscriptionUpdateResponse> cancelSubscription(@PathVariable String subscriptionId, @RequestBody CancelSubscriptionRequestDTO request) {
+        SubscriptionUpdateResponse response = subscriptionService.cancelSubscription(subscriptionId, request);
+        return ResponseEntity.ok(response);
+    }
+
+
+}

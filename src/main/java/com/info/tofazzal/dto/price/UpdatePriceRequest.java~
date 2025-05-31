@@ -1,0 +1,16 @@
+package com.info.tofazzal.dto.price;
+
+import jakarta.validation.Valid;
+import lombok.Data;
+
+import java.util.List;
+
+@Data
+class UpdatePriceRequest {
+    @Valid
+    private Money unit_price;
+    @Valid
+    private List<PriceOverride> unit_price_overrides;
+    @Valid
+    private BillingCycle billing_cycle;
+}

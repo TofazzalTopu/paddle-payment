@@ -1,0 +1,90 @@
+package com.info.tofazzal.service;
+
+import com.info.tofazzal.config.PaddleProperties;
+import com.info.tofazzal.dto.subscription.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+
+@Slf4j
+@Service
+public class PaddleSubscriptionService {
+
+    private final RestTemplate restTemplate;
+    private final PaddleProperties paddleProperties;
+
+    public PaddleSubscriptionService(RestTemplateBuilder builder, PaddleProperties paddleProperties) {
+        this.restTemplate = builder.build();
+        this.paddleProperties = paddleProperties;
+    }
+
+
+    public SubscriptionResponseDTO getSubscriptionById(String subscriptionId) {
+        String url = getSubscriptionBaseUrl() + subscriptionId;
+
+        HttpEntity<Void> entity = new HttpEntity<>(buildHeaders());
+
+        ResponseEntity<SubscriptionResponseDTO> response = restTemplate.exchange(url, HttpMethod.GET, entity, SubscriptionResponseDTO.class);
+
+        return response.getBody();
+    }
+
+    public SubscriptionUpdateResponse updateSubscription(String subscriptionId, UpdateSubscriptionRequest request) {
+        String url = getSubscriptionBaseUrl() + subscriptionId;
+        HttpEntity<UpdateSubscriptionRequest> httpEntity = new HttpEntity<>(request, buildHeaders());
+        log.info("Updating subscription with ID: {}, httpEntity: {}", subscriptionId, httpEntity);
+
+        ResponseEntity<SubscriptionUpdateResponse> response = restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, SubscriptionUpdateResponse.class);
+
+        return response.getBody();
+    }
+
+    public SubscriptionUpdateResponse cancelSubscription(String subscriptionId, CancelSubscriptionRequestDTO request) {
+        String url = String.format("%s/%s/cancel", getSubscriptionBaseUrl(), subscriptionId);
+        HttpEntity<CancelSubscriptionRequestDTO> httpEntity = new HttpEntity<>(request, buildHeaders());
+        log.info("Cancelling subscription with ID: {}, httpEntity: {}", subscriptionId, httpEntity);
+
+        ResponseEntity<SubscriptionUpdateResponse> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, SubscriptionUpdateResponse.class);
+
+        return response.getBody();
+    }
+
+    public SubscriptionUpdateResponse pauseSubscription(String subscriptionId, PauseSubscriptionRequestDTO request) {
+        String url = String.format("%s/%s/pause", getSubscriptionBaseUrl(), subscriptionId);
+        HttpEntity<PauseSubscriptionRequestDTO> httpEntity = new HttpEntity<>(request, buildHeaders());
+        log.info("Pausing subscription with ID: {}, httpEntity: {}", subscriptionId, httpEntity);
+
+        ResponseEntity<SubscriptionUpdateResponse> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, SubscriptionUpdateResponse.class);
+
+        return response.getBody();
+    }
+
+    public SubscriptionChargeResponseDTO chargeSubscription(String subscriptionId, ChargeRequestDTO requestDTO) {
+        String url = String.format("%/%s/charge", getSubscriptionBaseUrl(), subscriptionId);
+
+        HttpEntity<ChargeRequestDTO> entity = new HttpEntity<>(requestDTO, buildHeaders());
+        ResponseEntity<SubscriptionChargeResponseDTO> response = restTemplate.exchange(
+                url, HttpMethod.POST, entity, SubscriptionChargeResponseDTO.class);
+
+        return response.getBody();
+    }
+
+
+    private HttpHeaders buildHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(paddleProperties.getAuthCode());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        log.info("Headers: {}", headers);
+        return headers;
+    }
+
+    private String getSubscriptionBaseUrl() {
+        return paddleProperties.getApiUrl() + "/subscriptions";
+    }
+
+}

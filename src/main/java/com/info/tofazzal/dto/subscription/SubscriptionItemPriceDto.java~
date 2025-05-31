@@ -1,0 +1,7 @@
+package com.info.tofazzal.dto.subscription;
+
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
+@Builder
+public class SubscriptionItemPriceDto {
+}

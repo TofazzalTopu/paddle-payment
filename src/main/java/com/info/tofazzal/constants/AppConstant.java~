@@ -1,0 +1,13 @@
+package com.info.tofazzal.constants;
+
+public class AppConstant {
+
+    private AppConstant() {
+        // Private constructor to prevent instantiation
+    }
+
+    public static final String API_PADDLE = "/api/paddle";
+    public static final String API_PADDLE_PRICES = "/api/paddle/prices";
+    public static final String API_PADDLE_PRODUCTS = "/api/paddle/products";
+    public static final String API_PADDLE_PRODUCTS = "/api/paddle/subscriptions";
+}

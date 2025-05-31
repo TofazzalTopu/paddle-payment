@@ -1,0 +1,13 @@
+package com.info.tofazzal.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class CreateProductResponseDto {
+    private ProductDataDto data;
+    private MetaDto meta;
+}

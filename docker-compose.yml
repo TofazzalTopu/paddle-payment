@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: paddle-payment-app
+    ports:
+      - "8080:8080"
+    environment:
+      - PADDLE_VENDOR_ID=233092
+      - PADDLE_AUTH_CODE=pdl_live_apikey_01jwjkc1s2vma7f744243ava1t_aYBjGV5Ye5Npc8acCVDHzh_Apt
+    depends_on:
+      - ngrok
+
+  ngrok:
+    image: wernight/ngrok
+    container_name: ngrok
+    command: http app:8080
+    ports:
+      - "4040:4040"
+    environment:
+      - NGROK_AUTHTOKEN=YOUR_NGROK_AUTHTOKEN
